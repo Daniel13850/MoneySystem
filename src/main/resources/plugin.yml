@@ -1,0 +1,19 @@
+name: MoneySystem
+main: me.daniel1385.moneysystem.MoneySystem
+author: Daniel1385
+version: ${project.version}
+api-version: 1.21
+depend: [floodgate, Vault]
+commands:
+  addmoney:
+    permission: system.money.admin
+  removemoney:
+    permission: system.money.admin
+  setmoney:
+    permission: system.money.admin
+  getmoney:
+    permission: system.money.admin
+  money:
+    aliases: ["balance", "bal"]
+  pay: {}
+  bank: {}
