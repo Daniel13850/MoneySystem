@@ -25,7 +25,6 @@ public class MoneySystem extends JavaPlugin {
             config.set("mysql.database", "minecraft");
             config.set("mysql.username", "minecraft");
             config.set("mysql.password", "aA1234Aa");
-            config.set("mysql.prefix", "");
         }
         saveConfig();
         MySQL mysql = new MySQL(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password"), config.getString("server"));
