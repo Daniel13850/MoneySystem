@@ -132,7 +132,7 @@ public class CustomEconomy implements Economy {
 
     @Override
     public String format(double arg0) {
-        return DecimalFormat.getNumberInstance(Locale.GERMAN).format(arg0);
+        return DecimalFormat.getNumberInstance(Locale.GERMAN).format(arg0) + currencyNamePlural();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class CustomEconomy implements Economy {
 
     @Override
     public String getName() {
-        return "BeaconMC";
+        return "MoneySystem";
     }
 
     @Override
