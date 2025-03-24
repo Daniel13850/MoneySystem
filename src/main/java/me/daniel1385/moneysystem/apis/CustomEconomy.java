@@ -107,7 +107,12 @@ public class CustomEconomy implements Economy {
             if(val < 0) {
                 return new EconomyResponse(0, bal, ResponseType.FAILURE, "Invalid Number!");
             }
-            mysql.addMoney(uuid, val, reason);
+            Player p = Bukkit.getPlayer(uuid);
+            String display = null;
+            if(p != null) {
+                display = p.getDisplayName();
+            }
+            mysql.addMoney(uuid, val, reason, display);
             return new EconomyResponse(val, bal + val, ResponseType.SUCCESS, null);
         } catch (SQLException e) {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, "MySQL Error!");
@@ -288,7 +293,12 @@ public class CustomEconomy implements Economy {
             if(val < 0) {
                 return new EconomyResponse(0, bal, ResponseType.FAILURE, "Invalid Number!");
             }
-            if(!mysql.removeMoney(uuid, val, reason)) {
+            Player p = Bukkit.getPlayer(uuid);
+            String display = null;
+            if(p != null) {
+                display = p.getDisplayName();
+            }
+            if(!mysql.removeMoney(uuid, val, reason, display)) {
                 return new EconomyResponse(0, bal, ResponseType.FAILURE, "Not enough Money!");
             } else {
                 return new EconomyResponse(-val, bal - val, ResponseType.SUCCESS, null);

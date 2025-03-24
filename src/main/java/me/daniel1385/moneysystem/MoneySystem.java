@@ -44,6 +44,7 @@ public class MoneySystem extends JavaPlugin {
         getCommand("addmoney").setExecutor(new AddmoneyCommand());
         getCommand("removemoney").setExecutor(new RemovemoneyCommand());
         getCommand("bank").setExecutor(new BankCommand(mysql));
+        getCommand("baltop").setExecutor(new BaltopCommand(mysql));
     }
 
     @Override

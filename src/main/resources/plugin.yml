@@ -17,3 +17,4 @@ commands:
     aliases: ["balance", "bal"]
   pay: {}
   bank: {}
+  baltop: {}
