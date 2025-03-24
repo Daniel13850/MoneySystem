@@ -23,7 +23,9 @@ public class MySQL
 	}
 
 	private void connect() throws SQLException {
-		this.con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.db, this.user, this.pass);
+		if (con == null || con.isClosed()) {
+			con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.db, this.user, this.pass);
+		}
 	}
 
 	public void init() throws SQLException {
@@ -52,18 +54,14 @@ public class MySQL
 				"  `old` double NOT NULL," +
 				"  `new` double NOT NULL" +
 				");").execute();
-		disconnect();
 	}
 
 	public double getBank(UUID uuid) throws SQLException {
 		connect();
 		ResultSet set = this.con.prepareStatement("SELECT * FROM `bank` WHERE `uuid`='" + uuid.toString() + "'").executeQuery();
 		if(set.next()) {
-			double result = set.getDouble("money");
-			disconnect();
-			return result;
+            return set.getDouble("money");
 		} else {
-			disconnect();
 			return 0;
 		}
 	}
@@ -87,18 +85,14 @@ public class MySQL
 		stat.setDouble(4, old);
 		stat.setDouble(5, money);
 		stat.execute();
-		disconnect();
 	}
 
 	public double getMoney(UUID uuid) throws SQLException {
 		connect();
 		ResultSet set = this.con.prepareStatement("SELECT * FROM `" + server + "_money` WHERE `uuid`='" + uuid.toString() + "'").executeQuery();
 		if(set.next()) {
-			double result = set.getDouble("balance");
-			disconnect();
-			return result;
+            return set.getDouble("balance");
 		} else {
-			disconnect();
 			double start = 1000;
 			setMoney(uuid, start, "Startguthaben");
 			return start;
@@ -141,10 +135,12 @@ public class MySQL
 		stat.setDouble(4, old);
 		stat.setDouble(5, balance);
 		stat.execute();
-		disconnect();
 	}
 
-	private void disconnect() throws SQLException {
-		this.con.close();
+	public void disconnect() throws SQLException {
+		if (con == null || con.isClosed()) {
+			return;
+		}
+		con.close();
 	}
 }
