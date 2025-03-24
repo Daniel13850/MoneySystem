@@ -30,8 +30,8 @@ extends CommandBase
 			return false;
 		}
 		betrag = round(betrag);
-		if (betrag < 0) {
-			sender.sendMessage("§cEs sind keine Minuszahlen erlaubt!");
+		if (betrag <= 0) {
+			p.sendMessage("§cBitte gebe einen positiven Betrag ein!");
 			return false;
 		}
 		if(args[0].equals("*")) {

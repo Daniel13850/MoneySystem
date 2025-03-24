@@ -56,7 +56,7 @@ public class BankCommand implements CommandExecutor {
 				return false;
 			}
 			input = round(input);
-			if(input < 0) {
+			if(input <= 0) {
 				p.sendMessage("§cBitte gebe einen positiven Betrag ein!");
 				return false;
 			}
@@ -88,7 +88,7 @@ public class BankCommand implements CommandExecutor {
 				return false;
 			}
 			input = round(input);
-			if(input < 0) {
+			if(input <= 0) {
 				p.sendMessage("§cBitte gebe einen positiven Betrag ein!");
 				return false;
 			}
