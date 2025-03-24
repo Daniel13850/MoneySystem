@@ -47,7 +47,7 @@ extends CommandBase
 				sender.sendMessage("§aDer Kontostand von §6" + args[0] + " §awurde auf §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(MoneyAPI.get(UUID.fromString(uuid))) + "$ §agesetzt.");
 				return true;
 			} else {
-				sender.sendMessage("§cDieser Spieler hat nicht soviel Geld!");
+				sender.sendMessage("§cDieser Spieler hat nicht genug Geld!");
 				return false;
 			}
 		}

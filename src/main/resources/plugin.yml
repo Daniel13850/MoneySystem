@@ -6,13 +6,13 @@ api-version: 1.21
 depend: [floodgate, Vault]
 commands:
   addmoney:
-    permission: system.money.admin
+    permission: moneysystem.admin
   removemoney:
-    permission: system.money.admin
+    permission: moneysystem.admin
   setmoney:
-    permission: system.money.admin
+    permission: moneysystem.admin
   getmoney:
-    permission: system.money.admin
+    permission: moneysystem.admin
   money:
     aliases: ["balance", "bal"]
   pay: {}
