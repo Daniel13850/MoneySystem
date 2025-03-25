@@ -35,6 +35,7 @@ public class MySQL
 		con.prepareStatement("CREATE TABLE IF NOT EXISTS `bank` (" +
 				"  `uuid` varchar(36) NOT NULL," +
 				"  `money` double NOT NULL," +
+				"  `display` text DEFAULT NULL," +
 				"  PRIMARY KEY (`uuid`)" +
 				");").execute();
 		con.prepareStatement("CREATE TABLE IF NOT EXISTS `banklogs` (" +
@@ -69,7 +70,7 @@ public class MySQL
 		}
 	}
 
-	public void setBank(UUID uuid, double money) throws SQLException {
+	public void setBank(UUID uuid, double money, String display) throws SQLException {
 		connect();
 		double old;
 		ResultSet set = this.con.prepareStatement("SELECT * FROM `bank` WHERE `uuid`='" + uuid.toString() + "'").executeQuery();
@@ -79,6 +80,11 @@ public class MySQL
 		} else {
 			old = 0;
 			con.prepareStatement("INSERT INTO `bank` (`uuid`, `money`) VALUES ('" + uuid.toString() + "', '" + money + "')").execute();
+		}
+		if(display != null) {
+			PreparedStatement stat = con.prepareStatement("UPDATE `bank` SET `display` = ? WHERE `uuid`='" + uuid.toString() + "';");
+			stat.setString(1, display);
+			stat.execute();
 		}
 		double diff = money - old;
 		PreparedStatement stat = con.prepareStatement("INSERT INTO banklogs (uuid, amount, server, old, new) VALUES (?, ?, ?, ?, ?)");
@@ -109,6 +115,18 @@ public class MySQL
 		while(set.next()) {
 			String name = set.getString("display");
 			double betrag = set.getDouble("balance");
+			result.put(set.getString("uuid") + name, betrag);
+		}
+		return result;
+	}
+
+	public Map<String, Double> getTop10Bank() throws SQLException {
+		connect();
+		Map<String, Double> result = new LinkedHashMap<>();
+		ResultSet set = con.prepareStatement("SELECT * FROM `bank` WHERE `display` IS NOT NULL ORDER BY `money` DESC LIMIT 10").executeQuery();
+		while(set.next()) {
+			String name = set.getString("display");
+			double betrag = set.getDouble("money");
 			result.put(set.getString("uuid") + name, betrag);
 		}
 		return result;

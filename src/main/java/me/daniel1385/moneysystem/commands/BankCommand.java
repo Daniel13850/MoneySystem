@@ -57,7 +57,7 @@ public class BankCommand implements CommandExecutor {
 					return false;
 				}
 				try {
-					mysql.setBank(p.getUniqueId(), mysql.getBank(p.getUniqueId()) + input);
+					mysql.setBank(p.getUniqueId(), mysql.getBank(p.getUniqueId()) + input, p.getDisplayName());
 					p.sendMessage("§6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(input) + "$ §awurden eingezahlt.");
 					return true;
 				} catch(SQLException e) {
@@ -89,7 +89,7 @@ public class BankCommand implements CommandExecutor {
 						p.sendMessage("§cDu hast nicht genug Geld!");
 						return false;
 					}
-					mysql.setBank(p.getUniqueId(), mysql.getBank(p.getUniqueId()) - input);
+					mysql.setBank(p.getUniqueId(), mysql.getBank(p.getUniqueId()) - input, p.getDisplayName());
 					MoneyAPI.addMoney(p.getUniqueId(), input, "Bankauszahlung");
 					p.sendMessage("§6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(input) + "$ §awurden ausgezahlt.");
 					return true;
@@ -141,7 +141,13 @@ public class BankCommand implements CommandExecutor {
 					return false;
 				}
 				try {
-					mysql.setBank(UUID.fromString(uuid), input);
+					UUID tuuid = UUID.fromString(uuid);
+					Player t = Bukkit.getPlayer(tuuid);
+					String display = null;
+					if(t != null) {
+						display = t.getDisplayName();
+					}
+					mysql.setBank(tuuid, input, display);
 					sender.sendMessage("§aDas Bankguthaben von §6" + args[1] + " §awurde auf §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(input) + "$ §agesetzt.");
 				} catch(SQLException e) {
 					sender.sendMessage("§4Ein Fehler ist aufgetreten!");
