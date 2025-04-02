@@ -22,7 +22,7 @@ extends CommandBase
 	public boolean run(CommandSender sender, Player p, String[] args) {
         try {
             Map<String, Double> top = mysql.getTop10Bank();
-			sender.sendMessage("§7---------- §a§lTop 10 Bankkonten §7----------");
+			sender.sendMessage("§8---------- §a§lTop 10 Bankkonten §8----------");
 			int i = 1;
 			for(Map.Entry<String, Double> entry : top.entrySet()) {
 				sender.sendMessage("§7§l" + i + ". §f" + entry.getKey().substring(36) + "§8: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(entry.getValue()) + "$");
