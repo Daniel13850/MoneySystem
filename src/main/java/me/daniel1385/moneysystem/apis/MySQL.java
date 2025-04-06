@@ -43,7 +43,7 @@ public class MySQL
 				"  `amount` double NOT NULL," +
 				"  `server` text NOT NULL," +
 				"  `old` double NOT NULL," +
-				"  `new` double NOT NULL" +
+				"  `new` double NOT NULL," +
 				"  `time` timestamp NOT NULL DEFAULT current_timestamp()" +
 				");").execute();
 		con.prepareStatement("CREATE TABLE IF NOT EXISTS `" + server + "_money` (" +
@@ -57,7 +57,7 @@ public class MySQL
 				"  `amount` double NOT NULL," +
 				"  `reason` text NOT NULL," +
 				"  `old` double NOT NULL," +
-				"  `new` double NOT NULL" +
+				"  `new` double NOT NULL," +
 				"  `time` timestamp NOT NULL DEFAULT current_timestamp()" +
 				");").execute();
 	}
