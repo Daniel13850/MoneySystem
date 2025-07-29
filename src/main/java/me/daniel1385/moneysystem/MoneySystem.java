@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.sql.SQLException;
 
 public class MoneySystem extends JavaPlugin {
@@ -21,6 +22,7 @@ public class MoneySystem extends JavaPlugin {
             config.set("server", "global");
         }
         if(!config.contains("mysql")) {
+            config.set("mysql.use", false);
             config.set("mysql.host", "localhost");
             config.set("mysql.port", 3306);
             config.set("mysql.database", "minecraft");
@@ -28,7 +30,14 @@ public class MoneySystem extends JavaPlugin {
             config.set("mysql.password", "aA1234Aa");
         }
         saveConfig();
-        mysql = new MySQL(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password"), config.getString("server"));
+        String server = config.getString("server");
+        boolean usemysql = config.getBoolean("mysql.use");
+        if(usemysql) {
+            mysql = new MySQL(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password"), server);
+        } else {
+            File dbfile = new File(getDataFolder(), "storage.db");
+            mysql = new MySQL(dbfile.getAbsolutePath(), server);
+        }
         try {
             mysql.init();
         } catch(SQLException e) {

@@ -7,11 +7,12 @@ import java.util.UUID;
 
 public class MySQL
 {
-	private String host;
-	private int port;
-	private String db;
-	private String user;
-	private String pass;
+	private String host = null;
+	private int port = 0;
+	private String db = null;
+	private String user = null;
+	private String pass = null;
+	private String file = null;
 	private String server;
 	private Connection con;
 
@@ -24,9 +25,18 @@ public class MySQL
 		this.server = server;
 	}
 
+	public MySQL(String file, String server) {
+		this.file = file;
+		this.server = server;
+	}
+
 	private void connect() throws SQLException {
 		if (con == null || con.isClosed()) {
-			con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.db, this.user, this.pass);
+			if (file == null) {
+				con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.db, this.user, this.pass);
+			} else {
+				con = DriverManager.getConnection("jdbc:sqlite:" + this.file);
+			}
 		}
 	}
 
