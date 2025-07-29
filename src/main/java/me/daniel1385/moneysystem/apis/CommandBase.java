@@ -6,40 +6,42 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public abstract class CommandBase implements CommandExecutor {
+	private String prefix;
 	private boolean player;
 	private String perm;
 	private int args;
 	private String syntax;
 
-	public CommandBase() {
-		this(false, null, 0, null);
+	public CommandBase(String prefix) {
+		this(prefix, false, null, 0, null);
 	}
 
-	public CommandBase(String perm) {
-		this(false, perm, 0, null);
+	public CommandBase(String prefix, String perm) {
+		this(prefix, false, perm, 0, null);
 	}
 
-	public CommandBase(int args, String syntax) {
-		this(false, null, args, syntax);
+	public CommandBase(String prefix, int args, String syntax) {
+		this(prefix, false, null, args, syntax);
 	}
 
-	public CommandBase(String perm, int args, String syntax) {
-		this(false, perm, args, syntax);
+	public CommandBase(String prefix, String perm, int args, String syntax) {
+		this(prefix, false, perm, args, syntax);
 	}
 
-	public CommandBase(boolean player) {
-		this(player, null, 0, null);
+	public CommandBase(String prefix, boolean player) {
+		this(prefix, player, null, 0, null);
 	}
 
-	public CommandBase(boolean player, String perm) {
-		this(player, perm, 0, null);
+	public CommandBase(String prefix, boolean player, String perm) {
+		this(prefix, player, perm, 0, null);
 	}
 
-	public CommandBase(boolean player, int args, String syntax) {
-		this(player, null, args, syntax);
+	public CommandBase(String prefix, boolean player, int args, String syntax) {
+		this(prefix, player, null, args, syntax);
 	}
 
-	public CommandBase(boolean player, String perm, int args, String syntax) {
+	public CommandBase(String prefix, boolean player, String perm, int args, String syntax) {
+		this.prefix = prefix;
 		this.player = player;
 		this.perm = perm;
 		this.args = args;
@@ -49,18 +51,18 @@ public abstract class CommandBase implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (this.player && 
 				!(sender instanceof Player)) {
-			sender.sendMessage("§cDieser Befehl kann nur von Spielern ausgeführt werden!");
+			sender.sendMessage(prefix + "§cDieser Befehl kann nur von Spielern ausgeführt werden!");
 			return false;
 		} 
 
 		if (this.perm != null && 
 				!sender.hasPermission(this.perm)) {
-			sender.sendMessage("§4Dafür hast du keine Rechte!");
+			sender.sendMessage(prefix + "§4Dafür hast du keine Rechte!");
 			return false;
 		} 
 
 		if (args.length < this.args) {
-			sender.sendMessage("§cSyntax: §6" + this.syntax);
+			sender.sendMessage(prefix + "§cSyntax: §6" + this.syntax);
 			return false;
 		} 
 		if (sender instanceof Player) {

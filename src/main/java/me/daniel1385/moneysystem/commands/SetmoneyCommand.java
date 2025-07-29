@@ -1,6 +1,7 @@
 package me.daniel1385.moneysystem.commands;
 
 import com.google.gson.JsonParser;
+import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MoneyAPI;
 import org.bukkit.Bukkit;
@@ -20,22 +21,23 @@ import java.util.UUID;
 public class SetmoneyCommand
 extends CommandBase
 {
+	private MoneySystem plugin;
 
-	public SetmoneyCommand() {
-		super(2, "/setmoney <Spieler> <Betrag>");
+	public SetmoneyCommand(MoneySystem plugin) {
+		super(plugin.getPrefix(), 2, "/setmoney <Spieler> <Betrag>");
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
 		String uuid = getUUID(args[0]);
 		if (uuid == null) {
-			sender.sendMessage("§cDieser Spieler wurde nicht gefunden!");
+			sender.sendMessage(plugin.getPrefix() + "§cDieser Spieler wurde nicht gefunden!");
 			return false;
 		} 
 		try {
 			double betrag = Double.parseDouble(args[1].replace(".", "").replace(",", "."));
 			betrag = round(betrag);
 			if (betrag < 0) {
-				sender.sendMessage("§cEs sind keine Minuszahlen erlaubt!");
+				sender.sendMessage(plugin.getPrefix() + "§cEs sind keine Minuszahlen erlaubt!");
 				return false;
 			}
 			String reason;
@@ -45,10 +47,10 @@ extends CommandBase
 				reason = "Gesetzt per Konsole";
 			}
 			MoneyAPI.setMoney(UUID.fromString(uuid), betrag, reason);
-			sender.sendMessage("§aDer Kontostand von §6" + args[0] + " §awurde auf §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §agesetzt.");
+			sender.sendMessage(plugin.getPrefix() + "§aDer Kontostand von §6" + args[0] + " §awurde auf §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §agesetzt.");
 			return true;
 		} catch (NumberFormatException ex) {
-			sender.sendMessage("§cDer Betrag keine gültige Zahl!");
+			sender.sendMessage(plugin.getPrefix() + "§cDer Betrag keine gültige Zahl!");
 			return false;
 		} 
 	}

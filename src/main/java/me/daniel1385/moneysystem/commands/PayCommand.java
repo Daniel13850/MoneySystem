@@ -1,5 +1,6 @@
 package me.daniel1385.moneysystem.commands;
 
+import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MoneyAPI;
 import org.bukkit.Bukkit;
@@ -16,9 +17,10 @@ import java.util.Locale;
 public class PayCommand
 extends CommandBase
 {
+	private MoneySystem plugin;
 
-	public PayCommand() {
-		super(true, 2, "/pay <Spieler> <Betrag>");
+	public PayCommand(MoneySystem plugin) {
+		super(plugin.getPrefix(), true, 2, "/pay <Spieler> <Betrag>");
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
@@ -26,12 +28,12 @@ extends CommandBase
 		try {
 			betrag = Double.parseDouble(args[1].replace(".", "").replace(",", "."));
 		} catch(NumberFormatException e) {
-			p.sendMessage("§cDer Betrag keine gültige Zahl!");
+			p.sendMessage(plugin.getPrefix() + "§cDer Betrag keine gültige Zahl!");
 			return false;
 		}
 		betrag = round(betrag);
 		if (betrag <= 0) {
-			p.sendMessage("§cBitte gebe einen positiven Betrag ein!");
+			p.sendMessage(plugin.getPrefix() + "§cBitte gebe einen positiven Betrag ein!");
 			return false;
 		}
 		if(args[0].equals("*")) {
@@ -43,32 +45,32 @@ extends CommandBase
 				players.add(op);
 			}
 			if(players.isEmpty()) {
-				sender.sendMessage("§cEs ist niemand online!");
+				sender.sendMessage(plugin.getPrefix() + "§cEs ist niemand online!");
 				return false;
 			}
 			if (MoneyAPI.removeMoney(p.getUniqueId(), BigDecimal.valueOf(betrag).multiply(BigDecimal.valueOf(players.size())).doubleValue(), "Überweisung an " + players.size() + " Spieler")) {
 				for(Player op : players) {
 					MoneyAPI.addMoney(op.getUniqueId(), betrag, "Überweisung von " + p.getName());
-					p.sendMessage("§aDu hast §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aan §6" + op.getDisplayName() + " §aüberwiesen.");
-					op.sendMessage("§6" + String.valueOf(p.getDisplayName()) + " §ahat dir §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aüberwiesen.");
+					p.sendMessage(plugin.getPrefix() + "§aDu hast §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aan §6" + op.getDisplayName() + " §aüberwiesen.");
+					op.sendMessage(plugin.getPrefix() + "§6" + String.valueOf(p.getDisplayName()) + " §ahat dir §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aüberwiesen.");
 				}
 			} else {
-				p.sendMessage("§cDu hast nicht genug Geld!");
+				p.sendMessage(plugin.getPrefix() + "§cDu hast nicht genug Geld!");
 				return false;
 			}
 		}
 		Player pp = Bukkit.getPlayerExact(args[0]);
 		if (pp == null) {
-			p.sendMessage("§cDieser Spieler ist nicht online!");
+			p.sendMessage(plugin.getPrefix() + "§cDieser Spieler ist nicht online!");
 			return false;
 		}
 		if (MoneyAPI.removeMoney(p.getUniqueId(), betrag, "Überweisung an " + pp.getName())) {
 			MoneyAPI.addMoney(pp.getUniqueId(), betrag, "Überweisung von " + p.getName());
-			p.sendMessage("§aDu hast §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aan §6" + pp.getDisplayName() + " §aüberwiesen.");
-			pp.sendMessage("§6" + String.valueOf(p.getDisplayName()) + " §ahat dir §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aüberwiesen.");
+			p.sendMessage(plugin.getPrefix() + "§aDu hast §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aan §6" + pp.getDisplayName() + " §aüberwiesen.");
+			pp.sendMessage(plugin.getPrefix() + "§6" + String.valueOf(p.getDisplayName()) + " §ahat dir §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(betrag) + "$ §aüberwiesen.");
 			return true;
 		}
-		p.sendMessage("§cDu hast nicht genug Geld!");
+		p.sendMessage(plugin.getPrefix() + "§cDu hast nicht genug Geld!");
 		return false;
 	}
 

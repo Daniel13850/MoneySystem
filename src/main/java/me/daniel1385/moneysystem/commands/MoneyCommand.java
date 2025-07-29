@@ -1,5 +1,6 @@
 package me.daniel1385.moneysystem.commands;
 
+import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MoneyAPI;
 import org.bukkit.command.CommandSender;
@@ -10,13 +11,14 @@ import java.util.Locale;
 
 public class MoneyCommand
 extends CommandBase {
+	private MoneySystem plugin;
 
-	public MoneyCommand() {
-		super(true);
+	public MoneyCommand(MoneySystem plugin) {
+		super(plugin.getPrefix(), true);
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
-		p.sendMessage("§aDein Kontostand: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(MoneyAPI.get(p.getUniqueId())) + "$");
+		p.sendMessage(plugin.getPrefix() + "§aDein Kontostand: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(MoneyAPI.get(p.getUniqueId())) + "$");
 		return true;
 	}
 }

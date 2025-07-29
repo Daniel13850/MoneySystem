@@ -11,13 +11,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MoneySystem extends JavaPlugin {
+    private String prefix;
     private MySQL mysql;
 
     @Override
     public void onEnable() {
         FileConfiguration config = getConfig();
+        if(!config.contains("prefix")) {
+            config.set("prefix", "&7[&9MoneySystem&7] ");
+        }
         if(!config.contains("server")) {
             config.set("server", "global");
         }
@@ -30,6 +36,7 @@ public class MoneySystem extends JavaPlugin {
             config.set("mysql.password", "aA1234Aa");
         }
         saveConfig();
+        prefix = translateAllCodes(config.getString("prefix")) + "§r";
         String server = config.getString("server");
         boolean usemysql = config.getBoolean("mysql.use");
         if(usemysql) {
@@ -56,15 +63,15 @@ public class MoneySystem extends JavaPlugin {
             }
         }, 20*60L, 20*60L);
         Bukkit.getServicesManager().register(Economy.class, new CustomEconomy(mysql), Bukkit.getPluginManager().getPlugin("Vault"), ServicePriority.Highest);
-        getCommand("pay").setExecutor(new PayCommand());
-        getCommand("money").setExecutor(new MoneyCommand());
-        getCommand("setmoney").setExecutor(new SetmoneyCommand());
-        getCommand("getmoney").setExecutor(new GetmoneyCommand());
-        getCommand("addmoney").setExecutor(new AddmoneyCommand());
-        getCommand("removemoney").setExecutor(new RemovemoneyCommand());
-        getCommand("bank").setExecutor(new BankCommand(mysql));
-        getCommand("baltop").setExecutor(new BaltopCommand(mysql));
-        getCommand("banktop").setExecutor(new BanktopCommand(mysql));
+        getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("money").setExecutor(new MoneyCommand(this));
+        getCommand("setmoney").setExecutor(new SetmoneyCommand(this));
+        getCommand("getmoney").setExecutor(new GetmoneyCommand(this));
+        getCommand("addmoney").setExecutor(new AddmoneyCommand(this));
+        getCommand("removemoney").setExecutor(new RemovemoneyCommand(this));
+        getCommand("bank").setExecutor(new BankCommand(this));
+        getCommand("baltop").setExecutor(new BaltopCommand(this));
+        getCommand("banktop").setExecutor(new BanktopCommand(this));
     }
 
     @Override
@@ -74,5 +81,30 @@ public class MoneySystem extends JavaPlugin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public MySQL getMysql() {
+        return mysql;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    private String translateHexCodes (String text) {
+        Pattern pattern = Pattern.compile("&#[a-fA-F0-9]{6}");
+        Matcher matcher = pattern.matcher(text);
+
+        while(matcher.find()) {
+            net.md_5.bungee.api.ChatColor color = net.md_5.bungee.api.ChatColor.of(text.substring(matcher.start()+1, matcher.end()));
+            text = text.replace(text.substring(matcher.start(), matcher.end()), color.toString());
+            matcher = pattern.matcher(text);
+        }
+
+        return text;
+    }
+
+    private String translateAllCodes (String text) {
+        return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', translateHexCodes(text));
     }
 }

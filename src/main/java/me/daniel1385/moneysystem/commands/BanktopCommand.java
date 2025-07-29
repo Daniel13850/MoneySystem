@@ -1,5 +1,6 @@
 package me.daniel1385.moneysystem.commands;
 
+import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MySQL;
 import org.bukkit.command.CommandSender;
@@ -13,15 +14,16 @@ import java.util.Map;
 public class BanktopCommand
 extends CommandBase
 {
-	private MySQL mysql;
+	private MoneySystem plugin;
 
-	public BanktopCommand(MySQL mysql) {
-		this.mysql = mysql;
+	public BanktopCommand(MoneySystem plugin) {
+		super(plugin.getPrefix());
+		this.plugin = plugin;
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
         try {
-            Map<String, Double> top = mysql.getTop10Bank();
+            Map<String, Double> top = plugin.getMysql().getTop10Bank();
 			sender.sendMessage("§8---------- §a§lTop 10 Bankkonten §8----------");
 			int i = 1;
 			for(Map.Entry<String, Double> entry : top.entrySet()) {

@@ -1,8 +1,10 @@
 package me.daniel1385.moneysystem.commands;
 
 import com.google.gson.JsonParser;
+import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MoneyAPI;
+import me.daniel1385.moneysystem.apis.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,19 +20,20 @@ import java.util.UUID;
 public class GetmoneyCommand
 extends CommandBase
 {
+	private MoneySystem plugin;
+
+	public GetmoneyCommand(MoneySystem plugin) {
+		super(plugin.getPrefix(), 1, "/getmoney <Spieler>");
+	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
 		String uuid = getUUID(args[0]);
 		if (uuid == null) {
-			sender.sendMessage("§cDieser Spieler wurde nicht gefunden!");
+			sender.sendMessage(plugin.getPrefix() + "§cDieser Spieler wurde nicht gefunden!");
 			return false;
 		}
-		sender.sendMessage("§aKontostand von §6" + args[0] + "§a: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(MoneyAPI.get(UUID.fromString(uuid))) + "$");
+		sender.sendMessage(plugin.getPrefix() + "§aKontostand von §6" + args[0] + "§a: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(MoneyAPI.get(UUID.fromString(uuid))) + "$");
 		return true;
-	}
-
-	public GetmoneyCommand() {
-		super(1, "/getmoney <Spieler>");
 	}
 
 	private String getUUID(String name) {

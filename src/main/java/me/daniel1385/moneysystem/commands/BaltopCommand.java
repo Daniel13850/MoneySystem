@@ -1,6 +1,7 @@
 package me.daniel1385.moneysystem.commands;
 
 import com.google.gson.JsonParser;
+import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MoneyAPI;
 import me.daniel1385.moneysystem.apis.MySQL;
@@ -21,15 +22,16 @@ import java.util.UUID;
 public class BaltopCommand
 extends CommandBase
 {
-	private MySQL mysql;
+	private MoneySystem plugin;
 
-	public BaltopCommand(MySQL mysql) {
-		this.mysql = mysql;
+	public BaltopCommand(MoneySystem plugin) {
+		super(plugin.getPrefix());
+		this.plugin = plugin;
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
         try {
-            Map<String, Double> top = mysql.getTop10();
+            Map<String, Double> top = plugin.getMysql().getTop10();
 			sender.sendMessage("§8---------- §a§lTop 10 Kontostände §8----------");
 			int i = 1;
 			for(Map.Entry<String, Double> entry : top.entrySet()) {
@@ -38,7 +40,7 @@ extends CommandBase
 			}
 			return true;
         } catch (SQLException e) {
-			sender.sendMessage("§4Ein Fehler ist aufgetreten!");
+			sender.sendMessage(plugin.getPrefix() + "§4Ein Fehler ist aufgetreten!");
 			e.printStackTrace();
 			return false;
         }
