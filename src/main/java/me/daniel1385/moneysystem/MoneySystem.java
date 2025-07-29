@@ -36,6 +36,16 @@ public class MoneySystem extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mysql.keepAlive();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 20*60L, 20*60L);
         Bukkit.getServicesManager().register(Economy.class, new CustomEconomy(mysql), Bukkit.getPluginManager().getPlugin("Vault"), ServicePriority.Highest);
         getCommand("pay").setExecutor(new PayCommand());
         getCommand("money").setExecutor(new MoneyCommand());

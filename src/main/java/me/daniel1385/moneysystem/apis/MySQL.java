@@ -30,6 +30,11 @@ public class MySQL
 		}
 	}
 
+	public void keepAlive() throws SQLException {
+		connect();
+		con.isValid(0);
+	}
+
 	public void init() throws SQLException {
 		connect();
 		con.prepareStatement("CREATE TABLE IF NOT EXISTS `bank` (" +
