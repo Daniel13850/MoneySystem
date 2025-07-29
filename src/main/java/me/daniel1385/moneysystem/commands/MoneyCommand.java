@@ -15,6 +15,7 @@ extends CommandBase {
 
 	public MoneyCommand(MoneySystem plugin) {
 		super(plugin.getPrefix(), true);
+		this.plugin = plugin;
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {

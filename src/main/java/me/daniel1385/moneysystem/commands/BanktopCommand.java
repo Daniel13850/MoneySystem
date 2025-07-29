@@ -2,7 +2,6 @@ package me.daniel1385.moneysystem.commands;
 
 import me.daniel1385.moneysystem.MoneySystem;
 import me.daniel1385.moneysystem.apis.CommandBase;
-import me.daniel1385.moneysystem.apis.MySQL;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

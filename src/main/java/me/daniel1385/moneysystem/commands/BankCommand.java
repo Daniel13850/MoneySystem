@@ -1,40 +1,31 @@
 package me.daniel1385.moneysystem.commands;
 
-import com.google.gson.JsonParser;
 import me.daniel1385.moneysystem.MoneySystem;
+import me.daniel1385.moneysystem.apis.CommandBase;
 import me.daniel1385.moneysystem.apis.MoneyAPI;
-import me.daniel1385.moneysystem.apis.MySQL;
+import me.daniel1385.moneysystem.apis.PlayerNameAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.geysermc.floodgate.api.FloodgateApi;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.UUID;
 
-public class BankCommand implements CommandExecutor {
+public class BankCommand extends CommandBase {
 	private MoneySystem plugin;
 	
 	public BankCommand(MoneySystem plugin) {
+		super(plugin.getPrefix(), true);
 		this.plugin = plugin;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
-		if(!(sender instanceof Player)) {
-			sender.sendMessage(plugin.getPrefix() + "§cDieser Befehl kann nur von einem Spieler ausgeführt werden!");
-			return false;
-		}
-		Player p = (Player) sender;
+	public boolean run(CommandSender sender, Player p, String[] args) {
 		if(args.length > 0) {
 			if(args[0].toLowerCase().equals("einzahlen")) {
 				if(args.length == 1) {
@@ -105,13 +96,13 @@ public class BankCommand implements CommandExecutor {
 					p.sendMessage(plugin.getPrefix() + "§cSyntax: §6/bank get <Name>");
 					return false;
 				}
-				String uuid = getUUID(args[1]);
+				UUID uuid = PlayerNameAPI.getUUID(args[0]);
 				if (uuid == null) {
 					sender.sendMessage(plugin.getPrefix() + "§cDieser Spieler wurde nicht gefunden!");
 					return false;
 				}
 				try {
-					p.sendMessage(plugin.getPrefix() + "§aBankguthaben von §6" + args[1] + "§a: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(plugin.getMysql().getBank(UUID.fromString(uuid))) + "$");
+					p.sendMessage(plugin.getPrefix() + "§aBankguthaben von §6" + args[1] + "§a: §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(plugin.getMysql().getBank(uuid)) + "$");
 				} catch(SQLException e) {
 					sender.sendMessage(plugin.getPrefix() + "§4Ein Fehler ist aufgetreten!");
 					e.printStackTrace();
@@ -124,7 +115,7 @@ public class BankCommand implements CommandExecutor {
 					p.sendMessage(plugin.getPrefix() + "§cSyntax: §6/bank get <Name>");
 					return false;
 				}
-				String uuid = getUUID(args[1]);
+				UUID uuid = PlayerNameAPI.getUUID(args[1]);
 				if (uuid == null) {
 					sender.sendMessage(plugin.getPrefix() + "§cDieser Spieler wurde nicht gefunden!");
 					return false;
@@ -142,13 +133,12 @@ public class BankCommand implements CommandExecutor {
 					return false;
 				}
 				try {
-					UUID tuuid = UUID.fromString(uuid);
-					Player t = Bukkit.getPlayer(tuuid);
 					String display = null;
+					Player t = Bukkit.getPlayer(uuid);
 					if(t != null) {
 						display = t.getDisplayName();
 					}
-					plugin.getMysql().setBank(tuuid, input, display);
+					plugin.getMysql().setBank(uuid, input, display);
 					sender.sendMessage(plugin.getPrefix() + "§aDas Bankguthaben von §6" + args[1] + " §awurde auf §6" + DecimalFormat.getNumberInstance(Locale.GERMAN).format(input) + "$ §agesetzt.");
 				} catch(SQLException e) {
 					sender.sendMessage(plugin.getPrefix() + "§4Ein Fehler ist aufgetreten!");
@@ -172,31 +162,6 @@ public class BankCommand implements CommandExecutor {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	private String getUUID(String name) {
-		Player p = Bukkit.getPlayerExact(name);
-		if (p != null) {
-			return p.getUniqueId().toString();
-		}
-		String uuid;
-		if(!name.startsWith("!")) {
-			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader((new URL("https://api.mojang.com/users/profiles/minecraft/" + name)).openStream()));
-				uuid = JsonParser.parseReader(in).getAsJsonObject().get("id").toString().replaceAll("\"", "");
-				uuid = uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
-				in.close();
-			} catch(Exception e) {
-				return null;
-			}
-		} else {
-			try {
-				uuid = FloodgateApi.getInstance().createJavaPlayerId(FloodgateApi.getInstance().getXuidFor(name.substring(1)).get()).toString();
-			} catch(Exception ex) {
-				return null;
-			}
-		}
-		return uuid;
 	}
 
 	public double round(double value) {

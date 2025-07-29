@@ -21,6 +21,7 @@ extends CommandBase
 
 	public PayCommand(MoneySystem plugin) {
 		super(plugin.getPrefix(), true, 2, "/pay <Spieler> <Betrag>");
+		this.plugin = plugin;
 	}
 
 	public boolean run(CommandSender sender, Player p, String[] args) {
