@@ -52,7 +52,7 @@ public class MoneySystem extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -61,7 +61,7 @@ public class MoneySystem extends JavaPlugin {
                     e.printStackTrace();
                 }
             }
-        }, 20*60L, 20*60L);
+        }, 20*60*60L, 20*60*60L);
         Bukkit.getServicesManager().register(Economy.class, new CustomEconomy(mysql), Bukkit.getPluginManager().getPlugin("Vault"), ServicePriority.Highest);
         getCommand("pay").setExecutor(new PayCommand(this));
         getCommand("money").setExecutor(new MoneyCommand(this));
