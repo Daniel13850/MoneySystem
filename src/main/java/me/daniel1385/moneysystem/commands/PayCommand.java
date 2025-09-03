@@ -38,6 +38,10 @@ extends CommandBase
 			return false;
 		}
 		if(args[0].equals("*")) {
+			if(!p.hasPermission("moneysystem.payall")) {
+				sender.sendMessage(plugin.getPrefix() + "§cDu hast keine Berechtigung um an alle Spieler zu überweisen!");
+				return false;
+			}
 			List<Player> players = new ArrayList<>();
 			for(Player op : Bukkit.getOnlinePlayers()) {
 				if(op.getName().equals(p.getName())) {
@@ -59,6 +63,7 @@ extends CommandBase
 				p.sendMessage(plugin.getPrefix() + "§cDu hast nicht genug Geld!");
 				return false;
 			}
+			return true;
 		}
 		Player pp = Bukkit.getPlayerExact(args[0]);
 		if (pp == null) {
