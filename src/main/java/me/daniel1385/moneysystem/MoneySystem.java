@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public class MoneySystem extends JavaPlugin {
     private String prefix;
     private MySQL mysql;
+    private int start;
 
     @Override
     public void onEnable() {
@@ -35,15 +36,19 @@ public class MoneySystem extends JavaPlugin {
             config.set("mysql.username", "minecraft");
             config.set("mysql.password", "aA1234Aa");
         }
+        if(!config.contains("startmoney")) {
+            config.set("startmoney", 10);
+        }
         saveConfig();
         prefix = translateAllCodes(config.getString("prefix")) + "§r";
         String server = config.getString("server");
+        start = config.getInt("startmoney");
         boolean usemysql = config.getBoolean("mysql.use");
         if(usemysql) {
-            mysql = new MySQL(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password"), server);
+            mysql = new MySQL(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password"), server, start);
         } else {
             File dbfile = new File(getDataFolder(), "storage.db");
-            mysql = new MySQL(dbfile.getAbsolutePath(), server);
+            mysql = new MySQL(dbfile.getAbsolutePath(), server, start);
         }
         try {
             mysql.init();
@@ -72,6 +77,10 @@ public class MoneySystem extends JavaPlugin {
         getCommand("bank").setExecutor(new BankCommand(this));
         getCommand("baltop").setExecutor(new BaltopCommand(this));
         getCommand("banktop").setExecutor(new BanktopCommand(this));
+    }
+
+    public int getStartMoney() {
+        return start;
     }
 
     @Override

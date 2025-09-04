@@ -14,20 +14,23 @@ public class MySQL
 	private String pass = null;
 	private String file = null;
 	private String server;
+	private int start;
 	private Connection con;
 
-	public MySQL(String host, int port, String db, String user, String pass, String server) {
+	public MySQL(String host, int port, String db, String user, String pass, String server, int start) {
 		this.host = host;
 		this.port = port;
 		this.db = db;
 		this.user = user;
 		this.pass = pass;
 		this.server = server;
+		this.start = start;
 	}
 
-	public MySQL(String file, String server) {
+	public MySQL(String file, String server, int start) {
 		this.file = file;
 		this.server = server;
+		this.start = start;
 	}
 
 	private void connect() throws SQLException {
@@ -119,9 +122,12 @@ public class MySQL
 		if(set.next()) {
             return set.getDouble("balance");
 		} else {
-			double start = 1000;
-			setMoney(uuid, start, "Startguthaben", null);
-			return start;
+			if(start > 0) {
+				setMoney(uuid, start, "Startguthaben", null);
+				return start;
+			} else {
+				return 0;
+			}
 		}
 	}
 
